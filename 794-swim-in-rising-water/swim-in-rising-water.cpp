@@ -1,0 +1,54 @@
+class Solution {
+public:
+    int x[4]={1,-1,0,0};
+    int y[4]={0,0,1,-1};
+    bool valid(int i , int j , int n , int m){
+        if(i<0 || i>=n || j<0 || j>=m) return false;
+        else return true;
+    }
+
+    int swimInWater(vector<vector<int>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+
+        vector<vector<int>> res(n);
+        for(int i=0;i<n;i++){
+            vector<int> t(m,INT_MAX);
+            res[i]=t;
+        }
+
+        priority_queue<pair<int,pair<int,int>> , vector<pair<int,pair<int,int>>> , greater<pair<int,pair<int,int>>>> pq;
+
+        res[0][0]=grid[0][0];
+
+        pq.push({grid[0][0],{0,0}});
+        while(!pq.empty()){
+            pair<int,pair<int,int>> p=pq.top();
+
+            pq.pop();
+            int dis=p.first;
+            int row=p.second.first;
+            int col=p.second.second;
+
+            if(dis>res[row][col]){
+                continue;
+            }
+            for(int k=0;k<4;k++){
+                int r= row+x[k];
+                int c= col+y[k];
+
+                if(!valid(r,c,n,m)){
+                    continue;
+                }
+
+                int newwt = max(dis, max(grid[row][col], grid[r][c]));
+                if(newwt<res[r][c]){
+                    res[r][c]=newwt;
+                    pq.push({newwt,{r,c}});
+                }
+            }
+        }
+
+        return res[n-1][m-1];
+    }
+};
